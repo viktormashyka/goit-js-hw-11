@@ -4,14 +4,14 @@ import { Notify } from 'notiflix';
 
 export { feachPhotos };
 
-async function feachPhotos(searchPhotos) {
+async function feachPhotos(searchPhotos, page, per_page) {
   const BASE_URL = 'https://pixabay.com/api/';
   const API_KEY = '29782836-0cb6e5c5167e525a8102df66c';
-  const url = `${BASE_URL}?key=${API_KEY}&q=${searchPhotos}&image_type=photo&orientation=horizontal&safesearch=true&page=1&per_page=40`;
-  // const response = await fetch(url);
-  const response = await axios.get(
-    `https://pixabay.com/api/?key=29782836-0cb6e5c5167e525a8102df66c&q=${searchPhotos}`
-  );
+  const url = `${BASE_URL}?key=${API_KEY}&q=${searchPhotos}&image_type=photo&orientation=horizontal&safesearch=true&page=${page}&per_page=${per_page}`;
+  const response = await fetch(url);
+  // const response = await axios.get(
+  //   `https://pixabay.com/api/?key=29782836-0cb6e5c5167e525a8102df66c&q=${searchPhotos}`
+  // );
   // {
   //   params: {
   //     // q: 'searchPhotos',
@@ -33,8 +33,8 @@ async function feachPhotos(searchPhotos) {
     Notify.failure(error);
   }
   console.log(response);
-  // return response.json();
-  return response.data;
+  return response.json();
+  // return response.data;
 }
 
 // async function feachPhotos(searchPhotos) {

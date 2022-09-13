@@ -2,6 +2,7 @@ import { Notify } from 'notiflix';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 import { feachPhotos } from './feachPhotos';
+import Pagination from 'tui-pagination';
 // import axios from 'axios';
 // import { PixabayApi } from './pixabay-api';
 // import { getPhotos } from './axios';
@@ -9,14 +10,20 @@ import { feachPhotos } from './feachPhotos';
 
 const formRef = document.querySelector('form#search-form');
 const divGalleryRef = document.querySelector('.gallery');
-// const divPhotoRef = document.querySelector('.photo-card');
 const submitBtnRef = document.querySelector('form button[type="submit"]');
 const galleryEl = document.querySelector('.gallery');
 const buttonBtnRef = document.querySelector('.load-more');
-// console.log(submitBtnRef);
 formRef.addEventListener('submit', onSearch);
+buttonBtnRef.addEventListener('click', onPagination);
+
+const page = 1;
+const per_page = 40;
+const images = 0;
+
+buttonBtnRef.disabled = true;
 
 async function onSearch(event) {
+  buttonBtnRef.disabled = false;
   event.preventDefault();
   const {
     elements: { searchQuery },
@@ -58,6 +65,7 @@ async function onSearch(event) {
 function createPhotos(data) {
   console.log('data =>', data);
   const photos = data.hits;
+  // img = data.totalHits;
   if (photos.length === 0) {
     console.log(
       'Sorry, there are no images matching your search query. Please try again.'
@@ -68,16 +76,6 @@ function createPhotos(data) {
     return data;
   }
   if (photos.length > 0) {
-    // const photos = data.hits;
-    //   divGalleryRef.innerHTML = photos
-    //     .map(({ webformatURL, tags }) => {
-    //       return `<ul>
-    //   <li class="gallery__item">
-    //     <img src="${webformatURL}" alt="${tags}" class="gallery-img">
-    // </li>
-    //   </ul>`;
-    //     })
-    //     .join('');
     divGalleryRef.innerHTML = photos
       .map(
         ({
@@ -132,20 +130,27 @@ function openModalImg(evt) {
   gallery.refresh();
 }
 
-buttonBtnRef.addEventListener('click', onPagination);
-
-function onPagination(evt) {
+function onPagination(evt, data) {
   console.log('onPagination=>');
+  buttonBtnRef.disabled = false;
+  page += 1;
+  images = data.totalHits - per_page;
+  if (images < per_page) {
+    buttonBtnRef.disabled = true;
+  }
+  console.log('page', page);
+  console.log('img', img);
+  console.log('per_page', per_page);
+  return;
 }
 
 //**Прокручування сторінки */
 
-const { height: cardHeight } = document
-  .querySelector('.gallery')
-  .firstElementChild.getBoundingClientRect();
+// const { height: cardHeight } = document
+//   .querySelector('.gallery')
+//   .firstElementChild.getBoundingClientRect();
 
-window.scrollBy({
-  top: cardHeight * 2,
-  behavior: 'smooth',
-});
-//** */
+// window.scrollBy({
+//   top: cardHeight * 2,
+//   behavior: 'smooth',
+// });
