@@ -2,11 +2,9 @@ import { Notify } from 'notiflix';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 import { feachPhotos } from './feachPhotos';
-import Pagination from 'tui-pagination';
 // import axios from 'axios';
 // import { PixabayApi } from './pixabay-api';
 // import { getPhotos } from './axios';
-// import debounce from 'lodash.debounce';
 
 const formRef = document.querySelector('form#search-form');
 const divGalleryRef = document.querySelector('.gallery');
@@ -21,10 +19,13 @@ let page = 1;
 let per_page = 40;
 let images;
 let searchPhotos;
+let photos;
+let totalHits = 0;
 
 buttonBtnRef.disabled = true;
 
 async function onSearch(event) {
+  page = 1;
   buttonBtnRef.disabled = false;
 
   event.preventDefault();
@@ -39,14 +40,6 @@ async function onSearch(event) {
     return;
   }
   event.currentTarget.reset();
-  // feachPhotos(searchPhotos)
-  //   .then(data => {
-  //     createPhotos(data);
-  //   })
-  //   .catch(error => {
-  //     console.log(error);
-  //     Notify.failure(error);
-  //   });
   try {
     const result = await feachPhotos(searchPhotos, page, per_page);
     const data = await createPhotos(result);
@@ -58,16 +51,14 @@ async function onSearch(event) {
 }
 
 async function onPagination(event, data) {
-  console.log('onPagination=>');
   buttonBtnRef.disabled = false;
   event.preventDefault();
   page += 1;
-  // images = data.totalHits - per_page;
-  // if (images < per_page) {
-  //   buttonBtnRef.disabled = true;
-  // }
+  // console.log('totalHitsBefore=>', totalHits);
+  // totalHits += 1;
+  // console.log('totalHitsAfter=>', totalHits);
+
   console.log('page', page);
-  // console.log('img', img);
   console.log('per_page', per_page);
   try {
     const result = await feachPhotos(searchPhotos, page, per_page);
@@ -78,19 +69,12 @@ async function onPagination(event, data) {
   }
 }
 
-// pixabayApi.searchQuery = searchQuery.value;
-// pixabayApi
-//   .getSearchPhotos(searchQuery.value)
-//   .then(data => createPhotos(data))
-//   .catch(error => {
-//     console.error(error);
-//     Notify.failure(error);
-//   });
-
 function createPhotos(data) {
-  console.log('data =>', data);
-  const photos = data.hits;
-  // img = data.totalHits;
+  photos = data.hits;
+  totalHits = data.totalHits;
+  if (photos.length < per_page) {
+    buttonBtnRef.disabled = true;
+  }
   if (photos.length === 0) {
     console.log(
       'Sorry, there are no images matching your search query. Please try again.'
@@ -139,6 +123,7 @@ function createPhotos(data) {
       )
       .join('');
   }
+  return data;
 }
 
 galleryEl.addEventListener('click', openModalImg);
