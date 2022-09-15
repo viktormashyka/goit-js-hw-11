@@ -13,22 +13,25 @@ const divGalleryRef = document.querySelector('.gallery');
 const submitBtnRef = document.querySelector('form button[type="submit"]');
 const galleryEl = document.querySelector('.gallery');
 const buttonBtnRef = document.querySelector('.load-more');
+
 formRef.addEventListener('submit', onSearch);
 buttonBtnRef.addEventListener('click', onPagination);
 
-const page = 1;
-const per_page = 40;
-const images = 0;
+let page = 1;
+let per_page = 40;
+let images;
+let searchPhotos;
 
 buttonBtnRef.disabled = true;
 
 async function onSearch(event) {
   buttonBtnRef.disabled = false;
+
   event.preventDefault();
   const {
     elements: { searchQuery },
   } = event.currentTarget;
-  const searchPhotos = searchQuery.value;
+  searchPhotos = searchQuery.value;
   console.log('input =>', searchPhotos);
   if (!searchQuery.value) {
     console.log('Enter data');
@@ -45,7 +48,29 @@ async function onSearch(event) {
   //     Notify.failure(error);
   //   });
   try {
-    const result = await feachPhotos(searchPhotos);
+    const result = await feachPhotos(searchPhotos, page, per_page);
+    const data = await createPhotos(result);
+  } catch (error) {
+    console.error(error);
+    Notify.failure(error);
+  }
+  return searchPhotos;
+}
+
+async function onPagination(event, data) {
+  console.log('onPagination=>');
+  buttonBtnRef.disabled = false;
+  event.preventDefault();
+  page += 1;
+  // images = data.totalHits - per_page;
+  // if (images < per_page) {
+  //   buttonBtnRef.disabled = true;
+  // }
+  console.log('page', page);
+  // console.log('img', img);
+  console.log('per_page', per_page);
+  try {
+    const result = await feachPhotos(searchPhotos, page, per_page);
     const data = await createPhotos(result);
   } catch (error) {
     console.error(error);
@@ -128,20 +153,6 @@ function openModalImg(evt) {
   var gallery = $('.gallery a').simpleLightbox();
 
   gallery.refresh();
-}
-
-function onPagination(evt, data) {
-  console.log('onPagination=>');
-  buttonBtnRef.disabled = false;
-  page += 1;
-  images = data.totalHits - per_page;
-  if (images < per_page) {
-    buttonBtnRef.disabled = true;
-  }
-  console.log('page', page);
-  console.log('img', img);
-  console.log('per_page', per_page);
-  return;
 }
 
 //**Прокручування сторінки */

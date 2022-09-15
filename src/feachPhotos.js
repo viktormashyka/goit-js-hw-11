@@ -27,7 +27,6 @@ async function feachPhotos(searchPhotos, page, per_page) {
   //   },
   // }
   // );
-  console.log(response);
   if (!response.ok) {
     throw new Error(response.status);
     Notify.failure(error);
