@@ -74,15 +74,21 @@ ul {
   cursor: zoom-in;
 }
 
-.display_none {
+.visibility_hidden {
   /* display: none; */
   visibility: hidden;
 }
 
-/* .load-more {
+.load-more {
   display: inline-block;
   margin-top: 15px;
   margin-bottom: 15px;
   align-content: center;
   justify-content: center;
-} */
+}
+
+.info {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
