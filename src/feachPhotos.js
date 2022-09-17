@@ -26,11 +26,11 @@ async function feachPhotos(searchPhotos, page, per_page) {
   //   },
   // }
   // );
-  if (!response.ok) {
+  if (response.status !== 200) {
     throw new Error(response.status);
     Notify.failure(error);
   }
-  console.log(response);
+  console.log(response.data);
   // return response.json();
   return response.data;
 }
