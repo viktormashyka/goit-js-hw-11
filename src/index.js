@@ -2,9 +2,12 @@ import { Notify } from 'notiflix';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 import { feachPhotos } from './feachPhotos';
-// import axios from 'axios';
 // import { PixabayApi } from './pixabay-api';
-// import { getPhotos } from './axios';
+
+var lightbox = new SimpleLightbox('.gallery a', {
+  captionPosition: 'bottom',
+  captionDelay: 250,
+});
 
 const formRef = document.querySelector('form#search-form');
 const divGalleryRef = document.querySelector('.gallery');
@@ -22,11 +25,12 @@ let searchPhotos;
 let photos;
 let totalHits = 0;
 
-buttonBtnRef.disabled = true;
+// buttonBtnRef.disabled = true;
 
 async function onSearch(event) {
   page = 1;
-  buttonBtnRef.disabled = false;
+  buttonBtnRef.classList.remove('display-none');
+  // buttonBtnRef.disabled = false;
 
   event.preventDefault();
   const {
@@ -42,7 +46,8 @@ async function onSearch(event) {
   event.currentTarget.reset();
   try {
     const result = await feachPhotos(searchPhotos, page, per_page);
-    const data = await createPhotos(result);
+    // const data = createPhotos(result);
+    createPhotos(result);
   } catch (error) {
     console.error(error);
     Notify.failure(error);
@@ -51,7 +56,8 @@ async function onSearch(event) {
 }
 
 async function onPagination(event, data) {
-  buttonBtnRef.disabled = false;
+  // buttonBtnRef.disabled = false;
+  buttonBtnRef.classList.remove('display-none');
   event.preventDefault();
   page += 1;
   // console.log('totalHitsBefore=>', totalHits);
@@ -62,7 +68,8 @@ async function onPagination(event, data) {
   console.log('per_page', per_page);
   try {
     const result = await feachPhotos(searchPhotos, page, per_page);
-    const data = await createPhotos(result);
+    // const data = createPhotos(result);
+    createPhotos(result);
   } catch (error) {
     console.error(error);
     Notify.failure(error);
@@ -74,6 +81,9 @@ function createPhotos(data) {
   totalHits = data.totalHits;
   if (photos.length < per_page) {
     buttonBtnRef.disabled = true;
+    // buttonBtnRef.classList.remove('display-none');
+    console.log("We're sorry, but you've reached the end of search results.");
+    Notify.info("We're sorry, but you've reached the end of search results.");
   }
   if (photos.length === 0) {
     console.log(
@@ -123,22 +133,23 @@ function createPhotos(data) {
       )
       .join('');
   }
+  lightbox.refresh();
   return data;
 }
 
-galleryEl.addEventListener('click', openModalImg);
+// galleryEl.addEventListener('click', openModalImg);
 
-function openModalImg(evt) {
-  evt.preventDefault();
-  var lightbox = new SimpleLightbox('.gallery a', {
-    captionPosition: 'bottom',
-    captionDelay: 250,
-  });
+// function openModalImg(evt) {
+//   evt.preventDefault();
+//   var lightbox = new SimpleLightbox('.gallery a', {
+//     captionPosition: 'bottom',
+//     captionDelay: 250,
+//   });
 
-  var gallery = $('.gallery a').simpleLightbox();
+//   var gallery = $('.gallery a').simpleLightbox();
 
-  gallery.refresh();
-}
+//   gallery.refresh();
+// }
 
 //**Прокручування сторінки */
 

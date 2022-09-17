@@ -23,6 +23,14 @@ ul {
   list-style: none;
 }
 
+.search-form {
+  display: flex;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  align-content: center;
+  justify-content: center;
+}
+
 :root {
   --timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   --animation-duration: 250ms;
@@ -65,3 +73,16 @@ ul {
 .gallery__link:hover {
   cursor: zoom-in;
 }
+
+.display_none {
+  /* display: none; */
+  visibility: hidden;
+}
+
+/* .load-more {
+  display: inline-block;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  align-content: center;
+  justify-content: center;
+} */
