@@ -18,10 +18,10 @@ buttonBtnRef.addEventListener('click', onPagination);
 
 let page = 1;
 let per_page = 40;
-let images;
+let images = 0;
 let searchPhotos;
 let photos;
-let totalHits = 0;
+// let totalHits = 1;
 
 async function onSearch(event) {
   page = 1;
@@ -38,23 +38,19 @@ async function onSearch(event) {
   event.currentTarget.reset();
   try {
     divGalleryRef.innerHTML = '';
-
     const result = await feachPhotos(searchPhotos, page, per_page);
     buttonBtnRef.classList.remove('visibility_hidden');
     createPhotos(result);
+    Notify.info(`Hooray! We found ${result.totalHits} images.`);
   } catch (error) {
     Notify.failure(error);
   }
-  return searchPhotos;
+  return;
 }
 
 async function onPagination(event, data) {
-
   event.preventDefault();
   page += 1;
-  // console.log('totalHitsBefore=>', totalHits);
-  // totalHits += 1;
-  // console.log('totalHitsAfter=>', totalHits);
 
   // console.log('page', page);
   // console.log('per_page', per_page);
@@ -62,18 +58,24 @@ async function onPagination(event, data) {
     const result = await feachPhotos(searchPhotos, page, per_page);
     buttonBtnRef.classList.remove('visibility_hidden');
     createPhotos(result);
+    // images = Math.ceil((page * per_page) / result.totalHits);
+    images = (page * per_page) / result.totalHits;
+    if (images >= 1) {
+      buttonBtnRef.classList.add('visibility_hidden');
+      Notify.info("We're sorry, but you've reached the end of search results.");
+    }
   } catch (error) {
     Notify.failure(error);
   }
+  return;
 }
 
 function createPhotos(data) {
   photos = data.hits;
-  totalHits = data.totalHits;
-  if (photos.length < per_page) {
-    buttonBtnRef.classList.add('visibility_hidden');
-    Notify.info("We're sorry, but you've reached the end of search results.");
-  }
+  // if (photos.length < per_page) {
+  //   buttonBtnRef.classList.add('visibility_hidden');
+  //   Notify.info("We're sorry, but you've reached the end of search results.");
+  // }
   if (photos.length === 0) {
     Notify.failure(
       'Sorry, there are no images matching your search query. Please try again.'
