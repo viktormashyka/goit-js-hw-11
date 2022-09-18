@@ -42,6 +42,11 @@ async function onSearch(event) {
     buttonBtnRef.classList.remove('visibility_hidden');
     createPhotos(result);
     Notify.info(`Hooray! We found ${result.totalHits} images.`);
+    images = (page * per_page) / result.totalHits;
+    if (images >= 1) {
+      buttonBtnRef.classList.add('visibility_hidden');
+      Notify.info("We're sorry, but you've reached the end of search results.");
+    }
   } catch (error) {
     Notify.failure(error);
   }
